@@ -1,0 +1,67 @@
+{
+  // Phase-04 Together cloud worker (lane c-swe-09). Separate config file;
+  // the starter Sites wrangler.jsonc + worker/index.js stay untouched.
+  //
+  //   wrangler dev    --config wrangler.cloud.jsonc
+  //   wrangler deploy --config wrangler.cloud.jsonc   (controller only)
+  //
+  // Assets and /api are same-origin; all UI assets are session-gated by the
+  // worker (only /login + session establishment are anonymous).
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "together-example",
+  "main": "cloud/worker.ts",
+  "compatibility_date": "2025-09-24",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Static UI served by this worker through the ASSETS binding.
+  "assets": {
+    "directory": "./dist/client",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+
+  // Four SQLite Durable Objects (one durable directory, one durable
+  // session store, one per-project store, one per-project execution
+  // broker). The exported classes in cloud/worker.ts delegate to the
+  // owning lane modules after the controller merge.
+  "durable_objects": {
+    "bindings": [
+      { "name": "DIRECTORY_OBJECT", "class_name": "DirectoryObject" },
+      { "name": "SESSION_OBJECT", "class_name": "SessionObject" },
+      { "name": "PROJECT_OBJECT", "class_name": "ProjectObject" },
+      { "name": "EXECUTION_OBJECT", "class_name": "ExecutionObject" }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "DirectoryObject",
+        "SessionObject",
+        "ProjectObject",
+        "ExecutionObject"
+      ]
+    }
+  ],
+
+  // Replace the namespace placeholder with your own Artifacts namespace.
+  // Project repos are disposable
+  // together-cloud-* repositories created by the directory lane.
+  "artifacts": [
+    { "binding": "ARTIFACTS", "namespace": "your-together-artifacts-namespace", "remote": false }
+  ],
+
+  "vars": {
+    "TEST_REPO_PREFIX": "together-cloud-",
+    "TEST_CANONICAL_REF": "refs/heads/together-cloud",
+    // Comma-separated extra Origins allowed for browser mutations; the
+    // worker's own origin is always allowed. Keep empty in test.
+    "ALLOWED_ORIGINS": ""
+  }
+
+  // Secrets set via `wrangler secret put` (never committed):
+  //   OWNER_TOKENS        JSON [{ownerId,token}] — env-only owner authority
+  //   GIT_BRIDGE_TOKEN    bearer for role=git bridge pulls (private companion)
+  //   CHECK_BRIDGE_TOKEN  bearer for role=check bridge pulls (private companion)
+  //   PROBE_TOKEN/PROBE_REPO  existing arrival-probe credentials (optional)
+}

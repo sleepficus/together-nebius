@@ -1,0 +1,3 @@
+import {useEffect} from 'react';
+/** Only non-persisted form drafts. Conversation text already has its own durable local draft. */
+export function useUnsavedWork(dirty:boolean){useEffect(()=>{if(!dirty)return;const unload=(e:BeforeUnloadEvent)=>{e.preventDefault();e.returnValue=''};const navigate=(e:Event)=>{if(!window.confirm('Leave this view and discard its unsaved form draft?'))e.preventDefault()};window.addEventListener('beforeunload',unload);window.addEventListener('together:before-navigate',navigate);return()=>{window.removeEventListener('beforeunload',unload);window.removeEventListener('together:before-navigate',navigate)}},[dirty]);}

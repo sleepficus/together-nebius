@@ -1,0 +1,7 @@
+# For your own Wrangler local development; fill with new secrets.
+# Never commit .dev.vars. npm start uses fresh local credentials instead.
+OWNER_TOKENS='[{"ownerId":"your-owner-id","token":"REPLACE_WITH_RANDOM_SECRET"}]'
+GIT_BRIDGE_TOKEN=REPLACE_WITH_DISTINCT_RANDOM_SECRET
+CHECK_BRIDGE_TOKEN=REPLACE_WITH_DISTINCT_RANDOM_SECRET
+GIT_BRIDGE_PROJECT_IDS=your-project-id
+CHECK_BRIDGE_PROJECT_IDS=your-project-id

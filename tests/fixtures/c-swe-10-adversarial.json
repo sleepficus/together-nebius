@@ -1,0 +1,51 @@
+{
+  "fixture": "c-swe-10 adversarial input corpus",
+  "purpose": "Unsafe ids, refs and origins the acceptance driver and unit tests must see rejected. No secrets; all values are deliberate attack strings.",
+  "badProjectIds": [
+    "../escape",
+    "a/b",
+    "..",
+    ".hidden",
+    "-leading-dash",
+    "with space",
+    "with/slash/../inside",
+    "trailingslash/",
+    "semi;colon",
+    "dollar$ign",
+    "back\\slash",
+    "null?query"
+  ],
+  "overlongProjectId": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "goodProjectIds": [
+    "acc-1",
+    "project.test",
+    "A0_-x.y",
+    "p"
+  ],
+  "badRefs": [
+    "refs/../escape",
+    "refs/heads/..",
+    "main",
+    "-evil",
+    "refs/heads/x@{1}",
+    "refs/heads/.lock",
+    "refs/heads/x.lock",
+    "refs//double",
+    " refs/heads/spaced",
+    "refs/heads/trailing.",
+    "/absolute/path",
+    "refs/heads/a..b"
+  ],
+  "badShas": [
+    "not-a-sha",
+    "g111111111111111111111111111111111111111",
+    "12345",
+    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "0x1234567890123456789012345678901234567890"
+  ],
+  "foreignOrigins": [
+    "https://evil.example",
+    "https://127.0.0.1.evil.example",
+    "null"
+  ]
+}

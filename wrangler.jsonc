@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "together",
+  "main": "cloud/worker.ts",
+  "compatibility_date": "2025-09-24",
+  "compatibility_flags": ["nodejs_compat"],
+  // One Durable Object per project id owns the SQLite coordination store.
+  "durable_objects": {
+    "bindings": [
+      { "name": "PROJECT_OBJECT", "class_name": "ProjectObject" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["ProjectObject"] }
+  ],
+  // ARTIFACTS is the Artifacts namespace binding (env.ARTIFACTS); PROBE_* and
+  // OWNER_TOKENS/BOOTSTRAP_TOKEN are server-side secrets set via `wrangler
+  // secret put`, never committed.
+  "artifacts": [{ "binding": "ARTIFACTS", "namespace": "your-together-artifacts-namespace", "remote": false }],
+  "vars": {
+    "ARTIFACTS_REPO": "collaboration-demo",
+    "PROBE_REPO": "collaboration-demo"
+  }
+}

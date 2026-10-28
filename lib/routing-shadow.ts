@@ -1,0 +1,3 @@
+/** Future sorter seam only. No model call, credential, or permission mutation. */
+export interface RoutingSuggestion {eventRef:string;proposedRecipient:string;explanation:string;model:string|null;fallbackRecipient:string;}
+export function inspectRoutingSuggestion(s:RoutingSuggestion,ruleRecipients:ReadonlySet<string>){return{suggestion:s,acceptedForShadowComparison:ruleRecipients.has(s.proposedRecipient),authoritativeRecipients:[...ruleRecipients],execution:'none' as const,reason:ruleRecipients.has(s.proposedRecipient)?'Suggestion stays within rule-owned audience':'Rejected: model cannot widen audience'};}

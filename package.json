@@ -1,0 +1,50 @@
+{
+  "name": "together",
+  "version": "0.1.0-nebius.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --config vite.config.ts",
+    "build": "vite build --config vite.config.ts",
+    "preview": "vite preview",
+    "test": "node scripts/test-local.mjs",
+    "typecheck": "tsc --noEmit",
+    "dev:api": "tsx cloud/local-server.ts",
+    "build:byo-mcp": "node scripts/build-byo-mcp.mjs",
+    "pretest": "npm run build:byo-mcp",
+    "start": "node --env-file-if-exists=.env --import tsx scripts/start-local.mts",
+    "smoke:local": "tsx scripts/smoke-local.mts",
+    "test:nemo": "node --import tsx --test tests/local-nemo.test.ts",
+    "prepare": "npm run build:byo-mcp",
+    "agent:setup": "node --env-file-if-exists=.env --import tsx scripts/agent-setup.mjs",
+    "agent": "node scripts/crew-mcp.mjs",
+    "test:nemotron": "node --import tsx --test tests/local-nemo.test.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.1",
+    "@phosphor-icons/react": "2.1.10",
+    "@vitejs/plugin-react": "5.0.4",
+    "@xyflow/react": "12.12.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "vite": "6.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "esbuild": "0.28.2",
+    "jsdom": "26.1.0",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "license": "MIT",
+  "description": "A shared workspace for people and AI agents to coordinate code changes, checks, reviews and integration.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sleepficus/together-nebius.git"
+  }
+}

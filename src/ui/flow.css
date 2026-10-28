@@ -1,0 +1,36 @@
+@import "@xyflow/react/dist/style.css";
+
+/* ReactFlow canvas + card nodes (seat b-swe-07). */
+.flow-wrap { height: min(62vh, 640px); min-height: 420px; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: var(--bg); position: relative; }
+.flow-wrap .react-flow { background: var(--bg); }
+.react-flow__background { color: var(--border-strong); opacity: .35; }
+.flownode { width: 255px; min-height: 150px; padding: 16px; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 14px; box-shadow: var(--shadow); font-family: var(--sans); color: var(--text); display: flex; flex-direction: column; gap: 8px; cursor: pointer; position: relative; }
+.flownode:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.flownode.sel { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent), var(--shadow); }
+.flownode-portrait { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; background: var(--surface-2); }
+.flownode-icon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--surface-2); color: var(--accent); }
+.flownode-icon-candidate, .flownode-icon-help, .flownode-icon-finding { background: var(--amber-bg); color: var(--amber); }
+.flownode-icon-check { background: var(--blue-bg); color: var(--blue); }
+.flownode-icon-ready { background: var(--green-bg); color: var(--accent); }
+.flownode-head { display: flex; flex-direction: column; gap: 2px; }
+.flownode-title { font-weight: 700; font-size: 15px; line-height: 1.25; }
+.flownode-sub { color: var(--muted); font-size: 13px; }
+.flownode-body { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.4; }
+.flownode .pill { align-self: flex-start; }
+.flownode-candidate { width: 250px; border-color: var(--amber); background: linear-gradient(180deg, var(--amber-bg), var(--surface) 70%); }
+.flownode-check { width: 220px; min-height: 140px; }
+.flownode-ready { width: 180px; min-height: 120px; border-style: dashed; }
+.flownode-help, .flownode-finding { width: 230px; min-height: 110px; border-style: dashed; border-color: var(--amber); box-shadow: none; }
+.flownode .react-flow__handle { width: 10px; height: 10px; background: var(--surface); border: 2px solid var(--accent); }
+.flownode-help .react-flow__handle, .flownode-finding .react-flow__handle { border-color: var(--amber); }
+.react-flow__edge-path { stroke: var(--border-strong); stroke-width: 2; }
+.react-flow__edge.e-prereq .react-flow__edge-path { stroke: var(--accent); }
+.react-flow__edge.e-contrib .react-flow__edge-path { stroke: var(--blue); }
+.react-flow__edge.e-check .react-flow__edge-path { stroke: var(--amber); stroke-dasharray: 7 5; }
+.react-flow__edge.e-ready .react-flow__edge-path { stroke: var(--accent); stroke-width: 2.5; }
+.react-flow__edge.e-help .react-flow__edge-path { stroke: var(--muted); stroke-dasharray: 4 5; }
+.react-flow__edge .react-flow__edge-text { font-size: 11px; fill: var(--muted); }
+.react-flow__edge .react-flow__edge-textbg { fill: var(--bg); }
+.react-flow__edge marker path { stroke: inherit; fill: currentColor; }
+.react-flow__attribution { background: transparent; color: var(--muted); }
+.flow-hidden { position: absolute; left: 12px; bottom: 8px; margin: 0; font-size: 12px; color: var(--muted); background: var(--surface); padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border); }

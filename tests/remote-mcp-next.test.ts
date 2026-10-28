@@ -1,0 +1,21 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {remoteMcpRequest,consentPrincipal,REMOTE_TOOLS} from '../cloud/remote-mcp.ts';
+import {TogetherClient} from '../adapters/client.ts';import {handleRpc} from '../adapters/mcp.ts';import {createState} from '../lib/core.ts';import {MemoryStore} from '../lib/store.ts';import {openConversationStore} from '../cloud/local-conversation.ts';import {createApp} from '../cloud/app.ts';import {PROJECT_HANDLERS} from '../cloud/handlers.ts';
+const origin='https://fixture.invalid',now='2026-10-05T09:00:00Z';
+function setup(){const s=createState({id:'p',goal:'fixture',mode:'sample',actorId:'steve',now});const e={projectId:'p',revision:1,createdAt:now,updatedAt:now,actorId:'steve'};s.identities.a={...e,id:'a',displayName:'Synthetic',ownerId:'steve',creationSource:'fixture',status:'active'};s.sessions.x={...e,id:'x',identityId:'a',status:'active',advertisedCapabilities:[],observedCapabilities:[]};s.members.a={...e,id:'a',identityId:'a',kind:'core',scopes:['read','conversation:read','conversation:write']};s.credentials.c={...e,id:'c',identityId:'a',sessionId:'x',tokenHash:'fixture-not-real',status:'active',scopes:s.members.a.scopes,projectIds:['p']};const consent={projectId:'p',credentialId:'c',identityId:'a',sessionId:'x',ownerId:'steve',scopes:s.members.a.scopes,expiresAt:'2026-10-06T09:00:00Z'};return{s,consent};}
+test('remote consent rechecks expiry, project, scopes, revoked grant and session ownership',()=>{const {s,consent:p}=setup();assert.equal(consentPrincipal(s,p,now).id,'a');for(const bad of [{...p,projectId:'wrong'},{...p,expiresAt:'2020-01-01'},{...p,scopes:['owner']},{...p,sessionId:'wrong'}])assert.throws(()=>consentPrincipal(s,bad,now));s.credentials.c.status='revoked';assert.throws(()=>consentPrincipal(s,p,now));});
+test('SDK Streamable HTTP parity and lost-post recovery with same scoped handlers',async()=>{
+ const {s,consent}=setup(),store=new MemoryStore(s),db=openConversationStore(':memory:');let n=0;
+ db.store.create({id:'team',kind:'team',audience:'project',createdAt:now,nextSeq:0});db.store.join('team','a',0,now);
+ const apiFetch=async(r:Request,p:any)=>createApp({store,conversation:db.store,handlers:PROJECT_HANDLERS,authenticate:async()=>consentPrincipal(await store.read(),p,now),now:()=>now,uid:()=>`r-${++n}`}).fetch(r);
+ const client=new TogetherClient({baseUrl:origin,projectId:'p',token:'fixture',fetchFn:(url,init)=>apiFetch(new Request(url,init),consent)});
+ const remote=async(method:string,args:any)=>{const r=await remoteMcpRequest(new Request(origin+'/mcp',{method:'POST',headers:{'content-type':'application/json',accept:'application/json, text/event-stream','mcp-protocol-version':'2025-06-18',authorization:'Bearer oauth-fixture-credential'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params:args})}),{origin,consent,apiFetch});return{status:r.status,body:await r.json() as any}};
+ try{
+ const init=await remote('initialize',{protocolVersion:'2025-06-18',clientInfo:{name:'fixture',version:'1'},capabilities:{}});assert.equal(init.status,200);
+ const local:any=await handleRpc(client,{jsonrpc:'2.0',id:1,method:'tools/list'},REMOTE_TOOLS),list=await remote('tools/list',{});assert.deepEqual(list.body.result.tools.map((x:any)=>x.name),local.result.tools.map((x:any)=>x.name));
+ const post={name:'together_post_message',arguments:{channel:'team',body:'fixture post oauth-fixture-credential',clientRequestId:'stable'}};await remote('tools/call',post);const duplicate=await remote('tools/call',post);assert.equal(JSON.parse(duplicate.body.result.content[0].text).status,200);
+ const read=await remote('tools/call',{name:'together_read_messages',arguments:{channel:'team'}});assert.equal(JSON.parse(read.body.result.content[0].text).result.messages.length,1);assert.ok(!JSON.stringify(read.body).includes('oauth-fixture-credential'));assert.match(JSON.stringify(read.body),/credential redacted/);
+ const bad=await remote('tools/call',{name:'together_workspace',arguments:{}});assert.equal(bad.body.result.isError,true);
+ const originBad=await remoteMcpRequest(new Request(origin+'/mcp',{method:'POST',headers:{origin:'https://evil.invalid'}}),{origin,consent,apiFetch});assert.equal(originBad.status,403);
+ }finally{db.close()}
+});

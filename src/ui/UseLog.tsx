@@ -1,0 +1,10 @@
+import {useEffect,useState} from 'react';
+import {chatApi} from './Conversation.tsx';
+import type {UIController} from './Shell.tsx';
+export function UseLog({controller}:{controller:UIController}){
+ const [entries,setEntries]=useState<any[]>([]),[error,setError]=useState(''),[fields,setFields]=useState({day:new Date().toISOString().slice(0,10),runtime:'',helped:'',confused:'',failureRepair:''}),[sanitized,setSanitized]=useState(false);
+ const pid=controller.activeProjectId;const load=async()=>setEntries((await chatApi(pid,'use-log')).entries);
+ useEffect(()=>{setEntries([]);if(controller.mode==='live')void load().catch(e=>setError(e.message));},[pid,controller.mode]);
+ async function save(){try{const s=await chatApi(pid,'');await chatApi(pid,'use-log',{...fields,sanitized,operationId:crypto.randomUUID(),expectedRevision:s.project.revision,interventions:null,durationMs:null,costUsd:null,evidenceRefs:[]});await load();}catch(e){setError((e as Error).message)}}
+ return <details className="plan-form"><summary>Week-of-use notes</summary><p>Observational notes only. No collection starts automatically, and these notes do not change experiment outcomes.</p>{entries.map(e=><article key={e.id}><strong>{e.day} · {e.runtime}</strong><p>Helped: {e.helped}</p><p>Confused: {e.confused}</p><p>Failure / repair: {e.failureRepair}</p><small>Interventions: {e.interventions??'not reported'} · Time: {e.durationMs??'not reported'} · Cost: {e.costUsd??'not reported'}</small></article>)}{Object.keys(fields).map(k=><label key={k}>{k}<input value={(fields as any)[k]} type={k==='day'?'date':'text'} maxLength={2000} onChange={e=>setFields(f=>({...f,[k]:e.target.value}))}/></label>)}<label><input type="checkbox" checked={sanitized} onChange={e=>setSanitized(e.target.checked)}/> No private transcripts, credentials or personal records</label><button disabled={!sanitized||Object.values(fields).some(v=>!v.trim())||controller.mode!=='live'} onClick={()=>void save()}>Save observational note</button>{error&&<p role="alert">{error}</p>}</details>;
+}

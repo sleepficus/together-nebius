@@ -1,0 +1,20 @@
+{
+  "source": "built-in Image Gen, three scoped portrait helpers",
+  "style": "rounded friendly 3D clay robot inside pale circular backdrop, transparent outside; exact selected mockup reference",
+  "portraits": [
+    {
+      "file": "portrait-checker.png",
+      "sha256": "d87ab5d1cb7f6dc6ffe6f0a936f9171a6ebc52213a1a0fcf239c3a7ebddcc66b"
+    },
+    {
+      "file": "portrait-green.png",
+      "sha256": "a17637ffdb0de06ed66a972c09794126f1f46f655727d6db616e091357487db9"
+    },
+    {
+      "file": "portrait-blue.png",
+      "sha256": "2b3c29df8247019c47840747af0c6142a68875a08a522fc168481523565f5c20"
+    }
+  ],
+  "queue_versions": "pixel-resized copies only, original assets preserved in public/assets",
+  "reference": "Historical design reference; intentionally excluded from the distribution and not needed at runtime"
+}

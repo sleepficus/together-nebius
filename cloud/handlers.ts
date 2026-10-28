@@ -1,0 +1,21 @@
+import {handleWork} from '../lib/work.ts';
+import {handleRecovery} from '../lib/recovery.ts';
+import {handleAttention} from '../lib/attention.ts';
+import {handleCollaborationRecords} from '../lib/collaboration-records.ts';
+import {handleOverview} from '../lib/overview.ts';
+import {handleNeighborhood} from '../lib/neighborhood.ts';
+import type {ModuleHandler} from './app.ts';
+import {handleIdentity} from '../lib/identity.ts';
+import {handleAssignments} from '../lib/assignments.ts';
+import {handleChanges} from '../lib/changes.ts';
+import {handleIntegration} from '../lib/integration.ts';
+import {handleChecks} from '../lib/checks.ts';
+import {handleFindings} from '../lib/findings.ts';
+import {handleReviews} from '../lib/reviews.ts';
+import {handleInbox} from '../lib/inbox.ts';
+import {handleEvents} from '../lib/events.ts';
+import {handleConversation} from '../lib/conversation.ts';
+import {handlePlansRuns} from '../lib/plans-runs.ts';
+import {handleLounge} from '../lib/lounge.ts';
+/** The sole registry for local and hosted project routes. */
+export const PROJECT_HANDLERS:ModuleHandler[]=[handleWork,handleRecovery,handleAttention,handleCollaborationRecords,handleOverview,handleNeighborhood,handleIdentity,handleAssignments,handleChanges,handleIntegration,handleChecks,handleFindings,handleReviews,handleInbox,handleEvents,handleConversation,handlePlansRuns,handleLounge];

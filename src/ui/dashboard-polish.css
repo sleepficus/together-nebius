@@ -1,0 +1,74 @@
+/* Chad's focused usability pass: same cream/forest world, clearer places. */
+.shell .shell-header { gap:8px 18px; padding:12px 24px 6px; }
+.shell .shell-nav { order:3; flex:1 1 100%; margin:0; }
+.shell .header-tools { margin-left:auto; }
+.shell .header-context { max-width:180px; }
+.header-preferences { position:relative; }
+.header-preferences>summary { cursor:pointer; font-size:13px; min-height:44px; display:flex; align-items:center; border:1px solid var(--border); border-radius:10px; padding:8px 12px; }
+.display-options { position:absolute; right:0; top:50px; z-index:30; display:flex; gap:8px; padding:12px; background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); }
+.project-brief { margin:14px 0 32px; color:var(--muted); font-size:14px; max-width:850px; }
+.project-brief>summary { cursor:pointer; min-height:32px; }
+.project-brief p { overflow-wrap:anywhere; }
+.shell-main[hidden] { display:none; }
+.overview-shortcuts { display:flex; flex-wrap:wrap; align-items:center; gap:12px 20px; margin:20px 0 30px; }
+.overview-shortcuts a { display:inline-flex; min-height:44px; align-items:center; color:var(--accent); font-weight:600; text-decoration:none; }
+.overview-shortcuts a:first-child { padding:10px 18px; border-radius:12px; background:var(--accent); color:var(--bg); }
+.overview-range, .activity-details, .work-context { border:1px solid var(--border); border-radius:12px; padding:14px 18px; margin:16px 0; background:var(--surface); }
+.overview-range>summary, .activity-details>summary, .work-context>summary, .crew-credit-disclosure>summary { cursor:pointer; min-height:32px; font-size:14px; font-weight:600; color:var(--accent); }
+.activity-details .stat-strip { margin-top:20px; }
+.collaboration-questions h2 { font:700 27px/1.2 var(--serif); margin:6px 0 12px; }
+.collaboration-questions .cq-grid { gap:18px; }
+.collaboration-questions .cq-grid>section { padding:16px 18px; border:1px solid var(--border); border-radius:12px; background:var(--bg); }
+.collaboration-questions .cq-grid>section h3 { margin:0 0 12px; }
+.collaboration-questions .cq-grid>section p { font-size:14px; line-height:1.6; }
+.expand-chat, .talk-heading>button { min-height:44px; border:1px solid var(--border); background:var(--surface); color:var(--accent); border-radius:10px; padding:10px 14px; font-weight:600; }
+.talk-heading { padding:12px; }
+.talk-mode .shell-body { padding:24px; justify-content:center; }
+.talk-mode .crew-inspector { display:block; position:static; width:100%; max-width:960px; max-height:none; height:auto; border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); overflow:visible; }
+.talk-mode .talk-heading { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:20px 32px 14px; }
+.talk-heading h1 { font:700 clamp(28px,4vw,40px)/1.1 var(--serif); margin:6px 0 10px; }
+.talk-heading p { font-size:14px; color:var(--muted); margin:0; }
+.talk-heading .talk-eyebrow { font-size:12px; letter-spacing:.035em; }
+.talk-mode .crew-tabs { position:static; padding:6px 24px; }
+.talk-mode .close-crew, .talk-mode .crew-sheet-trigger { display:none; }
+.talk-mode .crew-panel-padding { padding:16px 32px; }
+.talk-mode .conversation-heading { display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 14px; }
+.talk-mode .conversation-heading h2 { font-size:23px; }
+.talk-mode .chat-log { height:clamp(100px,20dvh,220px); max-height:220px; margin:8px 0; padding-right:8px; }
+.chat-message .message-byline { font-size:14px; }
+.chat-message .message-byline time { font-size:12px; }
+.chat-message .message-actions { display:flex; align-items:start; gap:14px; margin-top:8px; }
+.message-actions>button { border:0; background:none; color:var(--accent); padding:4px 0; min-height:32px; font-size:12px; }
+.message-details { font-size:12px; color:var(--muted); padding-top:4px; overflow-wrap:anywhere; }
+.message-details>summary { cursor:pointer; }
+.message-details .message-mode { font-size:12px; }
+.message-starters { margin:10px 0; font-size:13px; color:var(--muted); }
+.message-starters>summary { min-height:32px; cursor:pointer; }
+.message-starters .encouragement-chips { padding:6px 0; }
+.chat-composer textarea { font-size:16px; line-height:1.5; }
+.chat-composer .chat-send-row small { font-size:12px; }
+.crew-credit-disclosure { font-size:13px; }
+.crew-credit-disclosure .crew-wall { border:0; }
+@media(min-width:861px) {
+  .overview-mode .crew-inspector:not(.sheet-open) { display:none; }
+  .overview-mode .shell-main { max-width:1160px; margin:0 auto; }
+}
+@media(max-width:860px) {
+  .shell .shell-header { padding:8px 12px 4px; gap:6px 10px; }
+  .shell .header-tools { gap:6px; }
+  .shell .user-badge { display:none; }
+  .shell .project-picker { flex:1; }
+  .shell .project-picker select { max-width:180px; }
+  .talk-mode .shell-body { padding:12px; }
+  .talk-mode .crew-inspector { z-index:auto; }
+  .talk-mode .talk-heading { padding:16px 18px 12px; align-items:center; flex-direction:row; gap:12px; }
+  .talk-mode .talk-heading>div { min-width:0; }
+  .talk-mode .talk-heading h1 { font-size:27px; margin-bottom:0; }
+  .talk-mode .talk-heading p:not(.talk-eyebrow) { display:none; }
+  .talk-mode .talk-heading>button { flex-shrink:0; font-size:12px; padding:8px 10px; }
+  .talk-mode .crew-panel-padding { padding:16px 18px; }
+  .talk-mode .crew-tabs { padding:6px 10px; }
+  .talk-mode .chat-log { height:150px; max-height:22dvh; }
+  .talk-mode .conversation-heading .conversation-label { font-size:12px; }
+  .collaboration-questions .cq-grid>section { padding:14px; }
+}

@@ -1,0 +1,17 @@
+import {WorkRecords} from './WorkRecords.tsx';
+import {useUnsavedWork} from './useUnsavedWork.ts';
+import {useEffect,useState} from 'react';
+import type {UIController} from './Shell.tsx';
+import {chatApi} from './Conversation.tsx';
+export function SharedWork({controller}:{controller:UIController}){
+ const [plans,setPlans]=useState<any[]>([]),[adopted,setAdopted]=useState<string>(),[rows,setRows]=useState([{key:'task-1',goal:'',checks:''}]),[error,setError]=useState(''),[busy,setBusy]=useState(false);
+ useUnsavedWork(rows.some(r=>r.goal.trim()||r.checks.trim()));
+ const pid=controller.activeProjectId;
+ useEffect(()=>{if(controller.mode==='live'){setPlans(Object.values(controller.state.planRevisions??{}));setAdopted(controller.state.project.adoptedPlanRevisionId as string|undefined)}},[controller.mode,controller.state.planRevisions,controller.state.project.adoptedPlanRevisionId]);
+ const load=async()=>{const d=await chatApi(pid,'plans');setPlans(d.plans);setAdopted(d.adoptedPlanRevisionId)};
+ useEffect(()=>{setPlans([]);setAdopted(undefined);if(controller.mode==='live')void load().catch(e=>setError(e.message));},[pid,controller.mode]);
+ async function save(){setBusy(true);setError('');try{await chatApi(pid,'plans',{operationId:crypto.randomUUID(),tasks:rows.map(r=>({key:r.key,goal:r.goal,acceptanceCriteria:r.checks.split('\n').map(x=>x.trim()).filter(Boolean)}))});await load();}catch(e){setError((e as Error).message)}finally{setBusy(false)}}
+ async function adopt(p:any){setBusy(true);try{const state=await chatApi(pid,'');await chatApi(pid,'plans/'+p.id+'/adopt',{operationId:crypto.randomUUID(),expectedRevision:state.project.revision});await load();await controller.action('refresh');}catch(e){setError((e as Error).message)}finally{setBusy(false)}}
+ return <section className="pg-section"><details className="plan-form"><summary>Shared plan revisions</summary><p>Stable keys preserve task identity. Drafts are separate from the adopted plan. Removed keys retire from the plan without deleting work; finished task requirements cannot be rewritten.</p>{controller.mode==='sample'&&<p>Sample only. Saving/adopting requires the authenticated owner.</p>}{rows.map((r,i)=><fieldset key={i}><legend>Task {i+1}</legend>{(['key','goal','checks'] as const).map(k=><label key={k}>{k==='checks'?'Acceptance checks (one per line)':k}<textarea rows={k==='checks'?3:1} value={r[k]} onChange={e=>setRows(xs=>xs.map((x,j)=>j===i?{...x,[k]:e.target.value}:x))}/></label>)}<button disabled={rows.length===1} onClick={()=>setRows(xs=>xs.filter((_,j)=>j!==i))}>Remove from draft</button></fieldset>)}<button disabled={rows.length>=20} onClick={()=>setRows(xs=>[...xs,{key:'task-'+crypto.randomUUID().slice(0,8),goal:'',checks:''}])}>Add task without dragging</button><button disabled={busy||controller.mode!=='live'||rows.some(r=>!r.goal.trim()||!r.checks.trim())} onClick={()=>void save()}>Save proposed revision</button>
+ {plans.map(p=><div className="saved-plan" key={p.id}><strong>{p.id===adopted?'Adopted':'Proposed'} · {p.id}</strong><p>{p.tasks.map((t:any)=>t.goal).join(' · ')}</p><button onClick={()=>setRows(p.tasks.map((t:any)=>({key:t.key,goal:t.goal,checks:t.acceptanceCriteria.join('\n')})))}>Use as draft</button><button disabled={busy||p.id===adopted} onClick={()=>void adopt(p)}>Adopt exact revision</button></div>)}{error&&<p role="alert">{error}</p>}</details><WorkRecords controller={controller}/></section>;
+}
