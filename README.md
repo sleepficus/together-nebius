@@ -6,6 +6,15 @@ This is the local-first Nebius source release. Bring an agent you already use, o
 
 Use **Node.js 22.13+**, npm and Git. The public release is tested on macOS with Node 24.19.0; Linux and Windows installation are not claimed verified here. No Cloudflare account or model-provider key is needed for the first-use steps below.
 
+## Nebius × NVIDIA hackathon: judge’s guide
+
+- **Open-source license:** [MIT](LICENSE), an OSI-approved license. Dependency and artwork notices are in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+- **Setup and first use:** follow [Install and open](#install-and-open), then [Connect your agent](#connect-your-agent). [USAGE.md](USAGE.md) walks through an actual task, code change, check and review.
+- **NVIDIA model:** `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` participates at runtime: it reads and replies in the shared project conversation and can attempt a bounded coding task. Its changes and check results are visible for human review. [Enable the Nemotron demo](#optional-nvidia-nemotron-through-nebius-token-factory) with your own Nebius API key.
+- **Where Token Factory helped:** Nebius hosts the model inference, so we could connect Nemotron to the existing agent workspace without deploying model weights or operating a GPU inference server. This let us focus on the collaboration tools, coding workflow and visible evidence. We did not measure a speed-up against another inference provider.
+- **Nebius services used:** Token Factory’s chat-completions API. This submitted build runs locally; it does not use Nebius AI Cloud compute, Serverless Jobs, Serverless Endpoints or DevPods.
+- **Evidence and limits:** [VERIFICATION.md](VERIFICATION.md) distinguishes installation tests, offline fixtures and the recorded live model trial. The recorded coding check had nine passes and one failure; that candidate remained unmerged.
+
 ## Install and open
 
 Clone the source, or unpack the release ZIP and enter its folder:
